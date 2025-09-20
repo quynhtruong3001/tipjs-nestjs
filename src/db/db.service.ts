@@ -15,9 +15,12 @@ export class DbService {
       const data = await readFile(filePath, {
         encoding: 'utf8',
       });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const parsed = JSON.parse(data);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
+      console.error(error);
       return [];
     }
   }
@@ -26,8 +29,7 @@ export class DbService {
   async wrire(obj: Record<string, any>) {
     const filePath = this.options.path;
 
-
-    await writeFile(this.options.path, JSON.stringify(obj || []), {
+    await writeFile(filePath, JSON.stringify(obj || []), {
       encoding: 'utf8',
     });
   }

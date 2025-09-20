@@ -13,6 +13,7 @@ export class UserService {
 
   // login user
   async login(loginUserDto: LoginUserDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const users: User[] = await this.dbService.read();
 
     const userFound = users.find(user => user.accountname === loginUserDto.accountname);
@@ -28,6 +29,8 @@ export class UserService {
   }
 
   async register(registerUserDto: RegisterUserDto) {
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const users: User[] = await this.dbService.read();
 
     // Check user already
