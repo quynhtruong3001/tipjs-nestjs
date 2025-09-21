@@ -8,69 +8,70 @@ import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class UserService {
-  @Inject(DbService)
-  dbService: DbService;
+	@Inject(DbService)
+	dbService: DbService;
 
-  // login user
-  async login(loginUserDto: LoginUserDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const users: User[] = await this.dbService.read();
+	// login user
+	async login(loginUserDto: LoginUserDto) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		const users: User[] = await this.dbService.read();
 
-    const userFound = users.find(user => user.accountname === loginUserDto.accountname);
-    if (!userFound) {
-      throw new BadRequestException('Login failed.');
-    }
+		const userFound = users.find(
+			(user) => user.accountname === loginUserDto.accountname,
+		);
+		if (!userFound) {
+			throw new BadRequestException('Login failed.');
+		}
 
-    // Check pass  = pass File
-    if (userFound.password !== loginUserDto.password) {
-      throw new BadRequestException('Login failed:');
-    }
-    return userFound;
-  }
+		// Check pass  = pass File
+		if (userFound.password !== loginUserDto.password) {
+			throw new BadRequestException('Login failed:');
+		}
+		return userFound;
+	}
 
-  async register(registerUserDto: RegisterUserDto) {
+	async register(registerUserDto: RegisterUserDto) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		const users: User[] = await this.dbService.read();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const users: User[] = await this.dbService.read();
+		// Check user already
+		const userFound = users.find(
+			(user) => user.accountname === registerUserDto.accountname,
+		);
+		if (userFound) {
+			throw new BadRequestException(
+				`User ${registerUserDto.accountname} already exists`,
+			);
+		}
 
-    // Check user already
-    const userFound = users.find(
-      (user) => user.accountname === registerUserDto.accountname,
-    );
-    if (userFound) {
-      throw new BadRequestException(
-        `User ${registerUserDto.accountname} already exists`,
-      );
-    }
+		const user = new User();
+		user.accountname = registerUserDto.accountname;
+		user.password = registerUserDto.password;
 
-    const user = new User();
-    user.accountname = registerUserDto.accountname;
-    user.password = registerUserDto.password;
+		// push
+		users.push(user);
 
-    // push
-    users.push(user);
+		await this.dbService.wrire(users);
+		return user;
+	}
 
-    await this.dbService.wrire(users);
-    return user;
-  }
+	create(createUserDto: CreateUserDto) {
+		return 'This action adds a new user';
+	}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+	findAll() {
+		return `This action returns all user`;
+	}
 
-  findAll() {
-    return `This action returns all user`;
-  }
+	findOne(id: number) {
+		return `This action returns a #${id} user`;
+	}
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+	update(id: number, updateUserDto: UpdateUserDto) {
+		return `This action updates a #${id} user`;
+	}
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+	remove(id: number) {
+		return `This action removes a #${id} user`;
+	}
 }
